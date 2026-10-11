@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#08111f">
+
+  <title>TBS RoamAgent | AI Travel Concierge</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Leaflet map library -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  >
+
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    defer
+  ></script>
+
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+  <div class="app-shell">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <a class="brand" href="#overview">
+        <span class="brand-mark">R</span>
+        <span>TBS <strong>RoamAgent</strong></span>
+      </a>
+
+      <p class="nav-label">WORKSPACE</p>
+
+      <nav class="navigation">
+        <a class="nav-link active" href="#overview">
+          <span>◈</span> Overview
+        </a>
+        <a class="nav-link" href="#planner">
+          <span>⌁</span> Plan journey
+        </a>
+        <a class="nav-link" href="#recommendations">
+          <span>⇄</span> Route options
+        </a>
+        <a class="nav-link" href="#routeMapSection">
+          <span>⌖</span> Route map
+        </a>
+        <a class="nav-link" href="#agent">
+          <span>✧</span> Agent activity
+        </a>
+        <a class="nav-link" href="#paypilot">
+          <span>▣</span> PayPilot Agent
+        </a>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="team-mark">TN</div>
+        <div>
+          <strong>Team NULL</strong>
+          <small>SAMARTHA 2026</small>
+        </div>
+        <span class="online-dot"></span>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content" id="overview">
+
+      <header class="topbar">
+        <div class="breadcrumb">
+          Workspace <span>/</span> Travel assistant
+        </div>
+
+        <div class="topbar-right">
+          <div class="avatar">N</div>
+        </div>
+      </header>
+
+      <!-- WELCOME -->
+      <section class="welcome">
+        <div>
+          <p class="eyebrow">
+            <span>✧</span> YOUR PERSONAL TRAVEL CONCIERGE
+          </p>
+
+          <h1>
+            Your journey,<br>
+            <span>intelligently planned.</span>
+          </h1>
+
+          <p class="welcome-copy">
+            Tell RoamAgent where you need to go. We'll help coordinate
+            your journey, compare travel options, visualize routes and
+            prepare for changes.
+          </p>
+        </div>
+
+        <div class="orbit-art" aria-hidden="true">
+          <div class="orbit orbit-one"></div>
+          <div class="orbit orbit-two"></div>
+          <div class="orbit-core">R<span>✦</span></div>
+          <div class="orbit-point point-one"></div>
+          <div class="orbit-point point-two"></div>
+          <div class="orbit-point point-three"></div>
+        </div>
+      </section>
+
+      <!-- JOURNEY PLANNER -->
+      <section class="planner-panel panel" id="planner">
+
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">LET'S GET YOU THERE</p>
+            <h2>Plan your journey</h2>
+          </div>
+
+          <span class="step-label">
+            <span>01</span> Journey details
+          </span>
+        </div>
+
+        <form id="tripForm">
+          <div class="form-grid">
+
+            <label class="field">
+              <span>FROM</span>
+              <span class="input-wrap">
+                <span class="field-icon">◎</span>
+                <input
+                  id="origin"
+                  name="origin"
+                  value="Visakhapatnam"
+                  placeholder="Starting city"
+                  required
+                >
+              </span>
+            </label>
+
+            <label class="field">
+              <span>TO</span>
+              <span class="input-wrap">
+                <span class="field-icon">⌖</span>
+                <input
+                  id="destination"
+                  name="destination"
+                  value="Hyderabad"
+                  placeholder="Destination city"
+                  required
+                >
+              </span>
+            </label>
+
+            <label class="field">
+              <span>MAXIMUM BUDGET</span>
+              <span class="input-wrap">
+                <span class="field-icon">₹</span>
+                <input
+                  id="budget"
+                  name="budget"
+                  type="number"
+                  min="1"
+                  value="800"
+                  required
+                >
+                <span class="input-suffix">INR</span>
+              </span>
+            </label>
+
+            <label class="field">
+  <span>JOURNEY DATE</span>
+  <span class="input-wrap">
+    <span class="field-icon">📅</span>
+    <input
+      id="journey_date"
+      name="journey_date"
+      type="date"
+      required
+    >
+  </span>
+          </label>
+        
+            <label class="field">
+              <span>ARRIVE BEFORE</span>
+              <span class="input-wrap">
+                <span class="field-icon">◷</span>
+                <input
+                  id="arrive_by"
+                  name="arrive_by"
+                  type="time"
+                  value="09:00"
+                  required
+                >
+              </span>
+            </label>
+
+          </div>
+
+          <div class="planner-actions">
+            <button
+              class="button button-primary"
+              id="planButton"
+              type="submit"
+            >
+              Find my best route <span>↗</span>
+            </button>
+
+            <button
+              class="button button-secondary"
+              id="voiceButton"
+              type="button"
+            >
+              <span class="mic-icon" aria-hidden="true">♩</span>
+              <span id="voiceLabel">Speak your journey</span>
+            </button>
+
+            <span class="form-note">
+              <span>✦</span> Smart planning, one request away
+            </span>
+          </div>
+        </form>
+
+        <p
+          class="status-message"
+          id="status"
+          role="status"
+          aria-live="polite"
+        >
+          Ready when you are. Enter your details or try voice input.
+        </p>
+
+      </section>
+
+      <!-- INTERACTIVE ROUTE MAP -->
+      <section class="panel map-panel" id="routeMapSection">
+
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">VISUALIZE YOUR JOURNEY</p>
+            <h2>Interactive route map</h2>
+          </div>
+
+          <span class="count-pill">DEMO MAP</span>
+        </div>
+
+        <div class="map-summary">
+          <div class="map-location">
+            <span class="map-location-icon origin-icon">A</span>
+            <div>
+              <small>STARTING POINT</small>
+              <strong id="mapOrigin">Visakhapatnam</strong>
+            </div>
+          </div>
+
+          <span class="map-connector">⟶</span>
+
+          <div class="map-location">
+            <span class="map-location-icon destination-icon">B</span>
+            <div>
+              <small>DESTINATION</small>
+              <strong id="mapDestination">Hyderabad</strong>
+            </div>
+          </div>
+        </div>
+
+        <p class="map-description" id="mapDescription">
+          Select a suitable journey to visualize its route.
+        </p>
+
+        <div
+          id="routeMap"
+          role="application"
+          aria-label="Interactive map displaying the selected travel route"
+        ></div>
+
+        <div class="map-legend">
+          <span><i class="legend-dot start-dot"></i> Origin</span>
+          <span><i class="legend-dot end-dot"></i> Destination</span>
+          <span><i class="legend-line"></i> Illustrative route</span>
+        </div>
+
+        <p class="map-disclaimer">
+          Map tiles require an internet connection. Route lines are
+          illustrative unless verified through a routing service.
+          This prototype does not provide live bus tracking.
+        </p>
+
+      </section>
+
+      <!-- ROUTE RECOMMENDATIONS AND AGENTS -->
+      <div class="content-grid">
+
+        <section class="recommendations-section" id="recommendations">
+
+          <div class="section-heading compact-heading">
+            <div>
+              <p class="eyebrow">CURATED FOR YOUR TRIP</p>
+              <h2>Journey recommendations</h2>
+            </div>
+
+            <span class="count-pill" id="routeCount">03 OPTIONS</span>
+          </div>
+        
+<section class="panel disruption-panel" id="disruptionPanel">
+    <h2>Journey Recovery Agent</h2>
+    <p>
+        Simulate a travel disruption and let RoamAgent evaluate a recovery plan.
+    </p>
+
+    <div class="field">
+        <label for="disruptionType">Choose a disruption</label>
+        <select id="disruptionType" class="form-control">
+            <option value="delay">Bus delayed by 60 minutes</option>
+            <option value="missed">Missed connecting bus</option>
+        </select>
+    </div>
+
+    <button type="button" id="recoveryButton" class="primary-button">
+        Find Recovery Plan
+    </button>
+
+    <p id="recoveryStatus" role="status" aria-live="polite">
+        No disruption simulated yet.
+    </p>
+
+    <div id="recoveryResults" aria-live="polite"></div>
+</section>
+
+          ```html
+<!-- Stage 4: Booking and PayPilot Demo -->
+<section class="panel booking-panel" id="bookingPanel">
+    <h2>Bus Booking & PayPilot Agent</h2>
+    <p>Review your selected sample service and simulate a booking payment.</p>
+
+    <div id="bookingSummary">
+        <p>First, plan your journey and select a route to begin.</p>
+    </div>
+
+    <button type="button" id="bookingButton" class="primary-button">
+        Review Booking
+    </button>
+
+    <div id="bookingDetails" aria-live="polite"></div>
+
+    <button
+        type="button"
+        id="paymentButton"
+        class="primary-button"
+        hidden
+    >
+        Simulate PayPilot Payment
+    </button>
+
+    <p id="paymentStatus" role="status" aria-live="polite">
+        No booking or payment simulated yet.
+    </p>
+</section>
+```<div id="results" class="route-list">
+
+            <article class="route-card featured-route">
+              <div class="route-card-top">
+                <span class="route-tag">✦ DEMO PREVIEW</span>
+                <span class="route-type">Sleeper</span>
+              </div>
+
+              <h3>Visakhapatnam <span>→</span> Hyderabad</h3>
+
+              <div class="route-timeline">
+                <div>
+                  <strong>09:00 PM</strong>
+                  <small>Departure</small>
+                </div>
+
+                <div class="timeline-line">
+                  <span>11h 30m</span>
+                </div>
+
+                <div>
+                  <strong>08:30 AM</strong>
+                  <small>Arrival</small>
+                </div>
+              </div>
+
+              <div class="route-card-bottom">
+                <div>
+                  <small>DEMO FARE</small>
+                  <strong class="fare">₹650</strong>
+                </div>
+                <span class="match-label">Budget friendly</span>
+              </div>
+            </article>
+
+            <article class="route-card">
+              <div class="route-card-top">
+                <span class="route-tag muted-tag">OPTION 02</span>
+                <span class="route-type">Seater</span>
+              </div>
+
+              <h3>Visakhapatnam <span>→</span> Hyderabad</h3>
+
+              <div class="route-timeline">
+                <div>
+                  <strong>08:30 PM</strong>
+                  <small>Departure</small>
+                </div>
+
+                <div class="timeline-line">
+                  <span>11h 15m</span>
+                </div>
+
+                <div>
+                  <strong>07:45 AM</strong>
+                  <small>Arrival</small>
+                </div>
+              </div>
+
+              <div class="route-card-bottom">
+                <div>
+                  <small>DEMO FARE</small>
+                  <strong class="fare">₹720</strong>
+                </div>
+                <span class="match-label">Earlier arrival</span>
+              </div>
+            </article>
+
+            <article class="route-card">
+              <div class="route-card-top">
+                <span class="route-tag muted-tag">OPTION 03</span>
+                <span class="route-type">Sleeper</span>
+              </div>
+
+              <h3>Visakhapatnam <span>→</span> Hyderabad</h3>
+
+              <div class="route-timeline">
+                <div>
+                  <strong>10:00 PM</strong>
+                  <small>Departure</small>
+                </div>
+
+                <div class="timeline-line">
+                  <span>10h 50m</span>
+                </div>
+
+                <div>
+                  <strong>08:50 AM</strong>
+                  <small>Arrival</small>
+                </div>
+              </div>
+
+              <div class="route-card-bottom">
+                <div>
+                  <small>DEMO FARE</small>
+                  <strong class="fare">₹780</strong>
+                </div>
+                <span class="match-label">Late departure</span>
+              </div>
+            </article>
+
+          </div>
+
+          <p class="disclaimer">
+            Demo routes and fares are illustrative, not live bookings.
+          </p>
+
+        </section>
+
+        <!-- RIGHT COLUMN -->
+        <aside class="right-column">
+
+          <!-- AGENT ACTIVITY -->
+          <section class="panel agent-panel" id="agent">
+
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">BEHIND THE JOURNEY</p>
+                <h2>Agent activity</h2>
+              </div>
+              <span class="live-dot"></span>
+            </div>
+
+            <p class="agent-intro">
+              Your travel request, broken into intelligent steps.
+            </p>
+
+            <div class="agent-steps" id="agentSteps">
+
+              <div class="agent-step complete">
+                <span class="step-icon">✓</span>
+                <div>
+                  <strong>Understand request</strong>
+                  <small>Journey details captured</small>
+                </div>
+              </div>
+
+              <div class="agent-step complete">
+                <span class="step-icon">✓</span>
+                <div>
+                  <strong>Check route options</strong>
+                  <small>Demo transport data</small>
+                </div>
+              </div>
+
+              <div class="agent-step complete">
+                <span class="step-icon">✓</span>
+                <div>
+                  <strong>Compare budget</strong>
+                  <small>Fare limits considered</small>
+                </div>
+              </div>
+
+              <div class="agent-step">
+                <span class="step-icon">4</span>
+                <div>
+                  <strong>Optimize arrival</strong>
+                  <small>Match your deadline</small>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="agent-footer">
+              <span class="sparkle">✦</span>
+              Multi-step journey orchestration
+            </div>
+
+          </section>
+
+          <!-- PAYPILOT AGENT -->
+          <section class="panel paypilot-panel" id="paypilot">
+
+            <div class="paypilot-icon">▣</div>
+
+            <p class="eyebrow">PAYMENT SUPPORT</p>
+            <h2>PayPilot Agent</h2>
+
+            <p>
+              Payment assistance with transaction-status checks and a
+              confirmation step.
+            </p>
+
+            <button
+              class="button button-secondary button-full"
+              id="paymentButton"
+              type="button"
+            >
+              Preview payment flow <span>↗</span>
+            </button>
+
+            <div class="simulation-note">
+              <span>●</span> SIMULATED · NO REAL PAYMENT
+            </div>
+
+            <p
+              id="paymentStatus"
+              class="payment-status"
+              role="status"
+              aria-live="polite"
+            ></p>
+
+          </section>
+
+        </aside>
+      </div>
+
+      <!-- FOOTER -->
+      <footer class="page-footer">
+        <span>© 2026 TBS RoamAgent · Team NULL</span>
+
+        <span>
+          Built for SAMARTHA
+          <span class="footer-dot">•</span>
+          Prototype interface
+        </span>
+      </footer>
+
+    </main>
+  </div>
+</body>
+</html>
